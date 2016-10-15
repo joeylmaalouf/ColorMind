@@ -38,6 +38,7 @@ function applyStyles(){};
 	}
 
 	function addClass(color, n) {
+		console.log("Classifying", color)
 		$("#colormind-styles").text(
 			$("#colormind-styles").text() + ".colormind_" + n + "{color: " + color + " !important;}" 
 				+ ".colormind_" + n + "::-webkit-input-placeholder {color: " + color + " !important;}"
@@ -78,10 +79,13 @@ function applyStyles(){};
 					chrome.storage.sync.set(params);
 				}
 			}
+
+			c_string = correctColor[JSON.stringify(color)];
+			c_string = c_string.substring(1, c_string.length - 1);
 			if (color.length == 4) {
-				addClass("rgba(" + correctColor + ")", n);
+				addClass("rgba(" + c_string + ")", n);
 			} else {
-				addClass("rgb(" + correctColor + ")", n);
+				addClass("rgb(" + c_string + ")", n);
 			}
 		});
 	}
