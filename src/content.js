@@ -1,9 +1,7 @@
-
-
 function applyStyles(){};
 
 (function() {
-	var COLOR_MARGIN_UNIQUENESS = 5;
+	var COLOR_MARGIN_UNIQUENESS = 40;
 	var colors = [];
 	var counter = 0;
 
@@ -27,11 +25,14 @@ function applyStyles(){};
 		applyStyles = function() {
 			$("#colormind-styles").text("");
 			$.each(colors, function(n, color) {
+        for (var i = 0; i < color.length; ++i) {
+          color[i] = parseInt(color[i]);
+        };
 				getColor(color, n);
 			});
 		}
 
-		applyStyles()
+		applyStyles();
 	}
 
 	function addClass(color, n) {
@@ -44,9 +45,9 @@ function applyStyles(){};
 
 	// Either get the similar color if the given color is not unique enough, or return the color if it unique
 	function makeUnique(rgb) {
-		r = rgb[0]
-		g = rgb[1]
-		b = rgb[2]
+		r = rgb[0];
+		g = rgb[1];
+		b = rgb[2];
 
 		matchedColor = colors.find(function(c) {
 			return (Math.abs(c[0] - r) < COLOR_MARGIN_UNIQUENESS && 
@@ -55,8 +56,8 @@ function applyStyles(){};
 		});
 
 		if (matchedColor == undefined) {
-			colors.push(rgb)
-			return rgb
+			colors.push(rgb);
+			return rgb;
 		} else {
 			return matchedColor;
 		}
@@ -64,36 +65,21 @@ function applyStyles(){};
 
 	// Get corrected color for given color
 	function getColor(color, n) {
-		console.log(color)
 		chrome.storage.sync.get(color.toString(), function(correctColor) {
 			if ($.isEmptyObject(correctColor)) {
-				if (color.length == 4) {
-					correctColor = (parseInt(color[0]) + 50) + ',' 
-						+ (parseInt(color[1]) + 50) + "," 
-						+ (parseInt(color[2]) + 50) + "," 
-						+ (parseInt(color[3]));
-				} else {
-					correctColor = (parseInt(color[0]) + 50) + ',' 
-						+ (parseInt(color[1]) + 50) + "," 
-						+ (parseInt(color[2]) + 50);
-				}
+        correctColor = JSON.stringify(color);
 				if (counter > 0) {	
-					counter--;
-					var foo = {}
-					foo[color.toString()] = correctColor
-					chrome.storage.sync.set(foo);
+					--counter;
+					var params = {};
+					params[correctColor] = correctColor;
+					chrome.storage.sync.set(params);
 				}
 			}
-			console.log(correctColor)
 			if (color.length == 4) {
 				addClass("rgba(" + correctColor + ")", n);
 			} else {
 				addClass("rgb(" + correctColor + ")", n);
 			}
-		});
-
-		chrome.storage.sync.get(null, function(items) {
-			console.log(items);
 		});
 	}
 
