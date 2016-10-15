@@ -1,3 +1,3 @@
-require(['colormind'], function(colormind) {
+require(["colormind"], function(colormind) {
 	colormind.init();
 });
