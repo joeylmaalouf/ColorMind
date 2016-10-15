@@ -1,8 +1,9 @@
-define("colormind", [], function() {
-	exports.init = function() {
-		console.log("initted");
-	};
-});
+var colormind = {
+	init: function() {
+		$("*").each(function(i, e) {
+			console.log($(e).css('color'));
+		});
+	}
+}
 
-foo = require("colormind");
-foo.init();
+colormind.init()
