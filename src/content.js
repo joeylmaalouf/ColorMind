@@ -21,6 +21,8 @@ function applyStyles(){};
 		$("<style id='colormind-styles' type='text/css'></style>").appendTo("head");
 		$("*").each(function(i, e) {
 			color = $(e).css('color').match(/\d+/g)
+			background_color = $(e).css('background').match(/\d+/g)
+			$(e).addClass('colormind_background_' + colors.indexOf(makeUnique(background_color)))
 			$(e).addClass('colormind_' + colors.indexOf(makeUnique(color)))
 		});
 		console.log(colors.length + " unique colors identified.")
@@ -31,11 +33,12 @@ function applyStyles(){};
 				$("#colormind-styles").text(
 					$("#colormind-styles").text() + ".colormind_" + n + "{color: " + getColor(color) + " !important;}" 
 						+ ".colormind_" + n + "::-webkit-input-placeholder {color: " + getColor(color) + " !important;}"
+						+ ".colormind_background_" + n + "{background: " + getColor(color) + " !important;}"
 				);
 			});
 		}
 		applyStyles()
-		chrome.runtime.sendMessage({type: "colorMapUpdate"}, colorMap: colorMap});
+		chrome.runtime.sendMessage({type: "colorMapUpdate", colorMap: colorMap});
 	}
 
 	// Either get the similar color if the given color is not unique enough, or return the color if it unique
