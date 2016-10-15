@@ -18,22 +18,41 @@ def build_image_bar(color1, color2, filename, width=304, height=228):
 		firstColorFlag = not (firstColorFlag)
 	im.save(filename)
 
-color_to_names_dict = 	{
-						(0,0,0):"black", 
-						(255,0,0):"red", 
-						(0,255,0):"green", 
-						(0,0,255):"blue", 
-						(255,255,0):"yellow", 
-						(0,255,255):"cyan", 
-						(255,0,255):"magenta", 
-						(255,255,255):"white"
-						}
+
+def create_color_to_names_dict():
+	"""
+		Returns a dictionary of RGB color tuples to plaintext names
+	"""
+	d = {
+			(0,0,0):"black", 
+			(255,0,0):"red", 
+			(0,255,0):"green", 
+			(0,0,255):"blue", 
+			(255,255,0):"yellow", 
+			(0,255,255):"cyan", 
+			(255,0,255):"magenta", 
+			(255,255,255):"white"
+		}
+	k = d.keys()
+	for key in k:
+		new_light = tuple([min(255,i+128) for i in key])
+		new_dark = tuple([max(0, i-128) for i in key])
+		if key != (255,255,255):
+			d[new_light] = "light_" + d[key]
+			if key != (0,0,0):
+				d[new_dark] = "dark_" + d[key]
+	return d
+
+
 if __name__ == "__main__":
+
+	color_to_names_dict = create_color_to_names_dict()
+
 	cn_keys = color_to_names_dict.keys()
 	for i in range(len(cn_keys)):
 		for j in range(i+1, len(cn_keys)):
 			c1 = cn_keys[i]
 			c2 = cn_keys[j]
-			fn = color_to_names_dict[c1] + "_" + color_to_names_dict[c2]
+			fn = color_to_names_dict[c1] + "_and_" + color_to_names_dict[c2]
 			filename = "test_images/" + fn + ".png"
 			build_image_bar(c1, c2, filename)
