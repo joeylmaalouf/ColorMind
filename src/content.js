@@ -65,7 +65,7 @@ function applyStyles(){};
 	function getColor(color) {
 		c = colorMap[color.toString()];
 		if (c == undefined) {
-			c = '50,50,200'
+			c = color[0] + 50 + ',' + color[1] + 50 + "," + color[2] + 50;
 			colorMap[color.toString] = c;
 		}
 		c = c.split(',');
