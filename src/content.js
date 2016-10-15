@@ -6,7 +6,6 @@ function applyStyles(){};
 	var counter = 0;
 
 	function init() {
-    chrome.storage.sync.get("[255,255,255]", function (items) { console.log(items); });
 		chrome.storage.onChanged.addListener(function (changes, namespace) {
 			if (counter == 0) {
 				applyStyles();
@@ -34,11 +33,9 @@ function applyStyles(){};
 		}
 
 		applyStyles();
-    	chrome.storage.sync.get("[255,255,255]", function (items) { console.log(items); });
 	}
 
 	function addClass(color, n) {
-		console.log("Classifying", color)
 		$("#colormind-styles").text(
 			$("#colormind-styles").text() + ".colormind_" + n + "{color: " + color + " !important;}" 
 				+ ".colormind_" + n + "::-webkit-input-placeholder {color: " + color + " !important;}"
@@ -75,7 +72,6 @@ function applyStyles(){};
 					--counter;
 					var params = {};
 					params[correctColor] = correctColor;
-					console.log("WRITING", params);
 					chrome.storage.sync.set(params);
 				}
 			}
