@@ -71,6 +71,7 @@ function applyStyles(){};
 						+ (parseInt(color[1]) + 50) + "," 
 						+ (parseInt(color[2]) + 50);
 				}
+				chrome.storage.sync.set(color.toString(), correctColor);
 			}
 			console.log(correctColor)
 			if (color.length == 4) {
