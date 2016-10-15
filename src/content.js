@@ -26,15 +26,15 @@ function applyStyles(){};
 		applyStyles = function() {
 			$("#colormind-styles").text("");
 			$.each(colors, function(n, color) {
-        for (var i = 0; i < color.length; ++i) {
-          color[i] = parseInt(color[i]);
-        };
+		        for (var i = 0; i < color.length; ++i) {
+		        	color[i] = parseInt(color[i]);
+		        };
 				getColor(color, n);
 			});
 		}
 
 		applyStyles();
-    chrome.storage.sync.get("[255,255,255]", function (items) { console.log(items); });
+    	chrome.storage.sync.get("[255,255,255]", function (items) { console.log(items); });
 	}
 
 	function addClass(color, n) {
@@ -67,13 +67,14 @@ function applyStyles(){};
 
 	// Get corrected color for given color
 	function getColor(color, n) {
-		chrome.storage.sync.get(color.toString(), function(correctColor) {
+		chrome.storage.sync.get(JSON.stringify(color), function(correctColor) {
 			if ($.isEmptyObject(correctColor)) {
-        correctColor = JSON.stringify(color);
+        		correctColor = JSON.stringify(color);
 				if (counter > 0) {	
 					--counter;
 					var params = {};
 					params[correctColor] = correctColor;
+					console.log("WRITING", params);
 					chrome.storage.sync.set(params);
 				}
 			}
