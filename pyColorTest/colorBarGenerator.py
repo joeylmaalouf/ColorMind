@@ -11,13 +11,10 @@ def build_image_bar(color1, color2, filename, width=304, height=228):
 	xvals = np.linspace(0, width, 100, dtype=np.int16)
 	firstColorFlag = True
 	for i in range(1, len(xvals)):
+		currentColor = color1 if firstColorFlag else color2
 		for x in np.arange(xvals[i-1], xvals[i]):
 			for y in range(height):
-				# this is not efficient. todo: figure out efficient way to do it.
-				if firstColorFlag:
-					pixels[x,y] = color1
-				else:
-					pixels[x,y] = color2
+				pixels[x,y] = currentColor
 		firstColorFlag = not (firstColorFlag)
 	im.save(filename)
 
