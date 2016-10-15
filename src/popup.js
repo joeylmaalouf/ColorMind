@@ -10,19 +10,21 @@ var showRules = function () {
   for (var key in colors) {
     val = colors[key].toUpperCase();
     key = key.toUpperCase();
-    rules.innerHTML += "<input size=\"7\" style=\"background:#" + key + "\" value=\"#" + key + "\">";
+    rules.innerHTML += "<input size=\"7\" id=\"cpi" + count + "\" value=\"#" + key + "\">";
     rules.innerHTML += " &rarr; ";
-    rules.innerHTML += "<input size=\"7\" style=\"background:#" + val + "\" value=\"#" + val + "\" id=\"cp" + count + "\" value=\"#" + val + "\">";
-    rules.innerHTML += " <br>";
-    $("#cp" + count).spectrum({
-      color: "#" + val,
-      change: function (color) {
-        alert(color.toHexString());
-      }
-    });
+    rules.innerHTML += "<input size=\"7\" id=\"cpo" + count + "\" value=\"#" + val + "\">";
+    rules.innerHTML += " <br> <br>";
     ++count;
   }
-  console.log($("[id*=cp]"));
+  $("[id*=cpi]").spectrum({
+    disabled: true
+  });
+  $("[id*=cpo]").spectrum({
+    preferredFormat: "hex",
+    change: function (color) {
+      alert(color.toHexString());
+    }
+  });
 };
 
 $(document).ready(showRules);
