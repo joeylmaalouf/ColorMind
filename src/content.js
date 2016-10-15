@@ -1,14 +1,19 @@
-chrome.storage.onChanged.addListener(function(changes, namespace) {
-	applyStyles();
-});
+
 
 function applyStyles(){};
 
 (function() {
 	var COLOR_MARGIN_UNIQUENESS = 5;
 	var colors = [];
+	var counter = 0;
 
 	function init() {
+		chrome.storage.onChanged.addListener(function(changes, namespace) {
+			if (counter == 0) {
+				applyStyles();
+			}
+		});
+
 		$("<style id='colormind-styles' type='text/css'></style>").appendTo("head");
 		$("*").each(function(i, e) {
 			color = $(e).css('color').match(/\d+/g)
@@ -16,6 +21,7 @@ function applyStyles(){};
 			$(e).addClass('colormind_background_' + colors.indexOf(makeUnique(background_color)))
 			$(e).addClass('colormind_' + colors.indexOf(makeUnique(color)))
 		});
+		counter = colors.length;
 		console.log(colors.length + " unique colors identified.")
 
 		applyStyles = function() {
@@ -71,7 +77,12 @@ function applyStyles(){};
 						+ (parseInt(color[1]) + 50) + "," 
 						+ (parseInt(color[2]) + 50);
 				}
-				chrome.storage.sync.set(color.toString(), correctColor);
+				if (counter > 0) {	
+					counter--;
+					var foo = {}
+					foo[color.toString()] = correctColor
+					chrome.storage.sync.set(foo);
+				}
 			}
 			console.log(correctColor)
 			if (color.length == 4) {
@@ -79,6 +90,10 @@ function applyStyles(){};
 			} else {
 				addClass("rgb(" + correctColor + ")", n);
 			}
+		});
+
+		chrome.storage.sync.get(null, function(items) {
+			console.log(items);
 		});
 	}
 
