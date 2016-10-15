@@ -1,26 +1,25 @@
 var colors = {
   "ffffff": "000000",
-  "0033dd": "aa1155"
-};
-
-var makeButton = function (src, dst) {
-  src = src.toUpperCase();
-  dst = dst.toUpperCase();
-  var str = "";
-  str += "<button style=\"background:#" + src + "\">#" + src + "</button>";
-  str += " &rarr; ";
-  str += "<button class=\"jscolor {value:'" + dst + "'}\">#" + dst + "</button>";
-  str += "<br>";
-  return str;
+  "0033dd": "aa1155",
+  "123456": "abcdef"
 };
 
 var showRules = function () {
-  var content = "";
+  var count = 0;
+  var rules = document.getElementById("rules");
   for (var key in colors) {
-    val = colors[key];
-    content += makeButton(key, val);
+    val = colors[key].toUpperCase();
+    key = key.toUpperCase();
+    rules.innerHTML += "<input size=\"7\" style=\"background:#" + key + "\" value=\"#" + key + "\">";
+    rules.innerHTML += " &rarr; ";
+    rules.innerHTML += "<input size=\"7\" id=\"colorpicker" + count + "\">";
+    rules.innerHTML += "<br>";
+    picker = document.getElementById("colorpicker" + count);
+    ColorPicker(picker, function(hex, hsv, rgb) {
+      alert(hex);
+    });
+    ++count;
   }
-  $("#rules").html(content);
 };
 
-$("document").ready(showRules);
+$(document).ready(showRules);

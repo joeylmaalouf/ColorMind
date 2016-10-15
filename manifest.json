@@ -15,10 +15,8 @@
         "*://*/*"
       ],
       "js": [
+        "libs/colorpicker.min.js",
         "libs/jquery-3.1.1.min.js",
-        "libs/jscolor-2.0.4.min.js",
-        "libs/require.min.js",
-        "src/colormind.js",
         "src/content.js"
       ],
       "run_at": "document_end"
