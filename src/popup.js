@@ -19,12 +19,17 @@ var showRules = function () {
   $("[id*=cpi]").spectrum({
     disabled: true
   });
-  $("[id*=cpo]").spectrum({
-    preferredFormat: "hex",
-    change: function (color) {
-      alert(color.toHexString());
-    }
-  });
+  for (var i = 0; i < count; ++i) {
+    var idi = "#cpi" + i;
+    var ido = "#cpo" + i;
+    $(ido).spectrum({
+      preferredFormat: "hex",
+      change: function (color) {
+        colors[$(idi).val()] = color;
+        $(ido).val(color);
+      }
+    });
+  };
 };
 
 $(document).ready(showRules);
