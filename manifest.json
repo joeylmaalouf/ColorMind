@@ -14,11 +14,7 @@
       "matches": [
         "*://*/*"
       ],
-      "css": [
-        "libs/spectrum.css"
-      ],
       "js": [
-        "libs/spectrum.js",
         "libs/jquery-3.1.1.min.js",
         "src/content.js"
       ],
