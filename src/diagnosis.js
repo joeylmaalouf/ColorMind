@@ -1,3 +1,4 @@
+console.log("blarg");
 var diagnose_func = function () {
   console.log("trying");
   $( "#diagnose" ).submit(function( event ) {
