@@ -1,9 +1,5 @@
 chrome.storage.onChanged.addListener(function(changes, namespace) {
-	for (key in changes) {
-		if (key == "colorMap") {
-			applyStyles();
-		}
-	}
+	applyStyles();
 });
 
 function applyStyles(){};
@@ -16,32 +12,28 @@ function applyStyles(){};
 		$("<style id='colormind-styles' type='text/css'></style>").appendTo("head");
 		$("*").each(function(i, e) {
 			color = $(e).css('color').match(/\d+/g)
-			background_color = $(e).css('background').match(/\d+/g)
+			background_color = $(e).css('background-color').match(/\d+/g)
 			$(e).addClass('colormind_background_' + colors.indexOf(makeUnique(background_color)))
 			$(e).addClass('colormind_' + colors.indexOf(makeUnique(color)))
 		});
 		console.log(colors.length + " unique colors identified.")
 
 		applyStyles = function() {
-			chrome.storage.sync.get('colorMap', function(map) {
-				if (map == undefined) {
-					map = {};
-				}
-				$("#colormind-styles").text("");
-				console.log(colors)
-				$.each(colors, function(n, color) {
-					$("#colormind-styles").text(
-						$("#colormind-styles").text() + ".colormind_" + n + "{color: " + getColor(color, map) + " !important;}" 
-							+ ".colormind_" + n + "::-webkit-input-placeholder {color: " + getColor(color, map) + " !important;}"
-							+ ".colormind_background_" + n + "{background: " + getColor(color, map) + " !important;}"
-					);
-				});
-				console.log(map)
-				chrome.storage.sync.set({"colorMap": map});
+			$("#colormind-styles").text("");
+			$.each(colors, function(n, color) {
+				getColor(color, n);
 			});
-			
 		}
+
 		applyStyles()
+	}
+
+	function addClass(color, n) {
+		$("#colormind-styles").text(
+			$("#colormind-styles").text() + ".colormind_" + n + "{color: " + color + " !important;}" 
+				+ ".colormind_" + n + "::-webkit-input-placeholder {color: " + color + " !important;}"
+				+ ".colormind_background_" + n + "{background-color: " + color + " !important;}"
+		);
 	}
 
 	// Either get the similar color if the given color is not unique enough, or return the color if it unique
@@ -65,15 +57,28 @@ function applyStyles(){};
 	}
 
 	// Get corrected color for given color
-	function getColor(color, map) {
-		var c = "";
-		if (map[color.toString()] == undefined) {
-			c = (parseInt(color[0]) + 50) + ',' + (parseInt(color[1]) + 50) + "," + (parseInt(color[2]) + 50);
-			map[color.toString()] = c;
-		} else {
-			c = map[color.toString()].split(',');
-		}
-		return "rgb(" + c[0] + ", " + c[1] + ", " + c[2] + ")";
+	function getColor(color, n) {
+		console.log(color)
+		chrome.storage.sync.get(color.toString(), function(correctColor) {
+			if ($.isEmptyObject(correctColor)) {
+				if (color.length == 4) {
+					correctColor = (parseInt(color[0]) + 50) + ',' 
+						+ (parseInt(color[1]) + 50) + "," 
+						+ (parseInt(color[2]) + 50) + "," 
+						+ (parseInt(color[3]));
+				} else {
+					correctColor = (parseInt(color[0]) + 50) + ',' 
+						+ (parseInt(color[1]) + 50) + "," 
+						+ (parseInt(color[2]) + 50);
+				}
+			}
+			console.log(correctColor)
+			if (color.length == 4) {
+				addClass("rgba(" + correctColor + ")", n);
+			} else {
+				addClass("rgb(" + correctColor + ")", n);
+			}
+		});
 	}
 
 	$(document).ready(function() {
