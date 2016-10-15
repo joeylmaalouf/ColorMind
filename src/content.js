@@ -1,15 +1,10 @@
-// Maps from unique colors to modified ones for colorblind ppl
-var colorMap = {};
-colorMap['255,255,255'] = '200,50,50';
-
-chrome.runtime.onMessage.addListener(
-	function(message, sender, sendResponse) {
-		if (message.type == "colorMapUpdate") {
-			colorMap = message.colorMap;
+chrome.storage.onChanged.addListener(function(changes, namespace) {
+	for (key in changes) {
+		if (key == "colorMap") {
 			applyStyles();
 		}
 	}
-);
+});
 
 function applyStyles(){};
 
@@ -28,17 +23,25 @@ function applyStyles(){};
 		console.log(colors.length + " unique colors identified.")
 
 		applyStyles = function() {
-			$("#colormind-styles").text("");
-			$.each(colors, function(n, color) {
-				$("#colormind-styles").text(
-					$("#colormind-styles").text() + ".colormind_" + n + "{color: " + getColor(color) + " !important;}" 
-						+ ".colormind_" + n + "::-webkit-input-placeholder {color: " + getColor(color) + " !important;}"
-						+ ".colormind_background_" + n + "{background: " + getColor(color) + " !important;}"
-				);
+			chrome.storage.sync.get('colorMap', function(map) {
+				if (map == undefined) {
+					map = {};
+				}
+				$("#colormind-styles").text("");
+				console.log(colors)
+				$.each(colors, function(n, color) {
+					$("#colormind-styles").text(
+						$("#colormind-styles").text() + ".colormind_" + n + "{color: " + getColor(color, map) + " !important;}" 
+							+ ".colormind_" + n + "::-webkit-input-placeholder {color: " + getColor(color, map) + " !important;}"
+							+ ".colormind_background_" + n + "{background: " + getColor(color, map) + " !important;}"
+					);
+				});
+				console.log(map)
+				chrome.storage.sync.set({"colorMap": map});
 			});
+			
 		}
 		applyStyles()
-		chrome.runtime.sendMessage({type: "colorMapUpdate", colorMap: colorMap});
 	}
 
 	// Either get the similar color if the given color is not unique enough, or return the color if it unique
@@ -62,13 +65,14 @@ function applyStyles(){};
 	}
 
 	// Get corrected color for given color
-	function getColor(color) {
-		c = colorMap[color.toString()];
-		if (c == undefined) {
-			c = parseInt(color[0] + 50) + ',' + parseInt(color[1] + 50) + "," + parseInt(color[2] + 50);
-			colorMap[color.toString] = c;
+	function getColor(color, map) {
+		var c = "";
+		if (map[color.toString()] == undefined) {
+			c = (parseInt(color[0]) + 50) + ',' + (parseInt(color[1]) + 50) + "," + (parseInt(color[2]) + 50);
+			map[color.toString()] = c;
+		} else {
+			c = map[color.toString()].split(',');
 		}
-		c = c.split(',');
 		return "rgb(" + c[0] + ", " + c[1] + ", " + c[2] + ")";
 	}
 
