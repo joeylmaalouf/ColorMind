@@ -15,7 +15,6 @@
         "*://*/*"
       ],
       "js": [
-        "libs/colorpicker.min.js",
         "libs/jquery-3.1.1.min.js",
         "src/content.js"
       ],

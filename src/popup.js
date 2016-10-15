@@ -12,14 +12,17 @@ var showRules = function () {
     key = key.toUpperCase();
     rules.innerHTML += "<input size=\"7\" style=\"background:#" + key + "\" value=\"#" + key + "\">";
     rules.innerHTML += " &rarr; ";
-    rules.innerHTML += "<input size=\"7\" id=\"colorpicker" + count + "\">";
-    rules.innerHTML += "<br>";
-    picker = document.getElementById("colorpicker" + count);
-    ColorPicker(picker, function(hex, hsv, rgb) {
-      alert(hex);
+    rules.innerHTML += "<input size=\"7\" style=\"background:#" + val + "\" value=\"#" + val + "\" id=\"cp" + count + "\" value=\"#" + val + "\">";
+    rules.innerHTML += " <br>";
+    $("#cp" + count).spectrum({
+      color: "#" + val,
+      change: function (color) {
+        alert(color.toHexString());
+      }
     });
     ++count;
   }
+  console.log($("[id*=cp]"));
 };
 
 $(document).ready(showRules);
