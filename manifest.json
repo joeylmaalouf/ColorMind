@@ -6,7 +6,7 @@
   "browser_action": {
     "default_title": "ColorMind",
     "default_icon": "icon.png",
-    "popup" : "popup.html"
+    "default_popup" : "popup.html"
   },
   "content_scripts": [
     {
