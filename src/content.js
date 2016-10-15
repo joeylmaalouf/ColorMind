@@ -1,9 +1,3 @@
-var colormind = {
-	init: function() {
-		$("*").each(function(i, e) {
-			console.log($(e).css('color'));
-		});
-	}
-}
-
-colormind.init()
+require(['colormind'], function(colormind) {
+	colormind.init();
+});
