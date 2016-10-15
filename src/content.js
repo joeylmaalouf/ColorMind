@@ -6,7 +6,8 @@ function applyStyles(){};
 	var counter = 0;
 
 	function init() {
-		chrome.storage.onChanged.addListener(function(changes, namespace) {
+    chrome.storage.sync.get("[255,255,255]", function (items) { console.log(items); });
+		chrome.storage.onChanged.addListener(function (changes, namespace) {
 			if (counter == 0) {
 				applyStyles();
 			}
@@ -33,6 +34,7 @@ function applyStyles(){};
 		}
 
 		applyStyles();
+    chrome.storage.sync.get("[255,255,255]", function (items) { console.log(items); });
 	}
 
 	function addClass(color, n) {
