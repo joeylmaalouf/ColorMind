@@ -2,6 +2,15 @@
 var colorMap = {};
 colorMap['255,255,255'] = '200,50,50';
 
+chrome.runtime.onMessage.addListener(
+	function(message, sender, sendResponse) {
+		if (message.type == "colorMapUpdate") {
+			colorMap = message.colorMap;
+			applyStyles();
+		}
+	}
+);
+
 function applyStyles(){};
 
 (function() {
@@ -13,8 +22,6 @@ function applyStyles(){};
 		$("*").each(function(i, e) {
 			color = $(e).css('color').match(/\d+/g)
 			$(e).addClass('colormind_' + colors.indexOf(makeUnique(color)))
-			// if (sum = color.reduce((pv, cv) => pv+cv, 0) != 0) {
-			// }
 		});
 		console.log(colors.length + " unique colors identified.")
 
@@ -28,6 +35,7 @@ function applyStyles(){};
 			});
 		}
 		applyStyles()
+		chrome.runtime.sendMessage({type: "colorMapUpdate"}, colorMap: colorMap});
 	}
 
 	// Either get the similar color if the given color is not unique enough, or return the color if it unique
