@@ -7,7 +7,9 @@ function applyStyles(){};
 
 	function init() {
 		chrome.storage.onChanged.addListener(function (changes, namespace) {
+			console.log(counter);
 			if (counter == 0) {
+				console.log("UPDATING")
 				applyStyles();
 			}
 		});
@@ -70,14 +72,17 @@ function applyStyles(){};
         		correctColor = JSON.stringify(color);
 				if (counter > 0) {	
 					--counter;
+					console.log("new counter", counter)
 					var params = {};
 					params[correctColor] = correctColor;
 					chrome.storage.sync.set(params);
 				}
+			} else if (counter != 0) {
+				counter = 0;
 			}
 
 			c_string = correctColor[JSON.stringify(color)];
-			c_string = c_string.substring(1, c_string.length - 1);
+			c_string = c_string.substring(1, c_string.length -1);
 			if (color.length == 4) {
 				addClass("rgba(" + c_string + ")", n);
 			} else {
