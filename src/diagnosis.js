@@ -95,7 +95,11 @@ var update = function () {
     for (var i = 0; i < tmp.length; i += 2) {
       changes[tmp[i]] = tmp[i+1];
     };
-    console.log(changes);
+    for (var key in changes) {
+      var params = {};
+      params[parseHEX(key)] = parseHEX(changes[key]);
+      chrome.storage.sync.set(params);
+    }
     for (var key in items) {
       if (key !== "enabled" && key !== "ColorBlindness") {
         var color = parseRGB(clampCategory(key));
