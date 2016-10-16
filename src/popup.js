@@ -1,5 +1,6 @@
 var showRules = function () {
   chrome.storage.sync.get(null, function (items) {
+    var rules = document.getElementById("rules");
     if (items["enabled"]) {
       var colors = [];
       for (var key in items) {
@@ -7,7 +8,7 @@ var showRules = function () {
           colors.push([parseRGB(key), parseRGB(items[key])]);
         }
       }
-      var rules = document.getElementById("rules");
+      rules.innerHTML = "<br>";
       var count = 0;
       for (var i in colors) {
         var values = colors[i];
@@ -34,6 +35,9 @@ var showRules = function () {
           chrome.storage.sync.set(params);
         }
       });
+    }
+    else {
+      rules.innerHTML = "Extension disabled.<br>Right-click to toggle.<br>";
     }
   });
 };

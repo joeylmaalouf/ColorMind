@@ -1,7 +1,7 @@
 var blindMap = {
   "red/dark_green": {
     "red": "red",
-    "green": "blue"
+    "dark_green": "blue"
   },
   "blue/yellow": {
     "blue": "blue",
@@ -25,7 +25,7 @@ var blindMap = {
   }
 };
 
-var diagnose_func = function (e) {
+var diagnose = function (e) {
   e.preventDefault();
   var a = $("input[name=color1]:checked", "#diagnose").val() === "Indistinct";
   var b = $("input[name=color2]:checked", "#diagnose").val() === "Indistinct";
@@ -44,12 +44,12 @@ var diagnose_func = function (e) {
   chrome.storage.sync.set({
     "ColorBlindness": blindness
   });
-}
+};
 
-function options_func() {
+var display = function () {
   chrome.storage.sync.get("ColorBlindness", function (items) {
-    var results = document.getElementById("results");
     var header = document.getElementById("resHeader");
+    var results = document.getElementById("results");
     header.innerHTML = "Results";
     var cb = items["ColorBlindness"];
     results.innerHTML = "You have the following types of color blindness:<br>";
@@ -66,7 +66,10 @@ function options_func() {
       }
     }
     if (perfect) {
-      results.innerHTML += "None!"
+      results.innerHTML += "None!";
+    }
+    else {
+      results.innerHTML += "<br>So we recommend the following changes:";
     }
     results.innerHTML += "<br>";
     for (var key in changes) {
@@ -80,11 +83,40 @@ function options_func() {
       disabled: true
     });
   });
-}
+};
+
+var update = function () {
+  chrome.storage.sync.get(null, function (items) {
+    var tmp = [];
+    var changes = {};
+    $(".color").each(function (index, element) {
+      tmp.push(element.value);
+    });
+    for (var i = 0; i < tmp.length; i += 2) {
+      changes[tmp[i]] = tmp[i+1];
+    };
+    console.log(changes);
+    for (var key in items) {
+      if (key !== "enabled" && key !== "ColorBlindness") {
+        var color = parseRGB(clampCategory(key));
+        if (color in changes) {
+          var params = {};
+          params[key] = clampCategory(parseHEX(changes[color]));
+          chrome.storage.sync.set(params);
+        }
+      }
+    }
+  });
+};
 
 $(document).ready(function() {
+  $("#update").hide();
   $("#diagnose").submit(function (e) {
-    diagnose_func(e);
-    options_func();
+    diagnose(e);
+    display();
+    $("#update").show();
+  });
+  $("#update").click(function (e) {
+    update();
   });
 });

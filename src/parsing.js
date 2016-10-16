@@ -52,7 +52,7 @@ for (var color in colorSamples) {
   }
 }
 
-var colorCategory = function (rgb) {
+var clampCategory = function (rgb) {
   rgb = JSON.parse(rgb);
   for (var category in colorSamples) {
     var colorData = colorSamples[category];
