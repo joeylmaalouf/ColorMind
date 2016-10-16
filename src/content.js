@@ -6,13 +6,12 @@ function applyStyles(){};
 	var counter = 0;
 
 	function init() {
-		chrome.storage.sync.get("enabled", function(item) {
-			if ($.isEmptyObject(item) || item.enabled) {
-				console.log("ColorMind enabled");
-				chrome.storage.sync.set({enabled: false});
+		chrome.storage.sync.get("enabled", function (item) {
+			if ($.isEmptyObject(item) || item["enabled"]) {
+				console.log("ColorMind enabled.");
+				chrome.storage.sync.set({"enabled": true});
 
 				chrome.storage.onChanged.addListener(function (changes, namespace) {
-					console.log(counter);
 					if (counter == 0) {
 						applyStyles();
 					}
@@ -40,7 +39,7 @@ function applyStyles(){};
 
 				applyStyles();
 			} else {
-				console.log("ColorMind disabled");
+				console.log("ColorMind disabled.");
 			}
 		});
 	}
@@ -80,7 +79,6 @@ function applyStyles(){};
         		correctColor = JSON.stringify(color);
 				if (counter > 0) {	
 					--counter;
-					console.log("new counter", counter)
 					var params = {};
 					params[correctColor] = correctColor;
 					chrome.storage.sync.set(params);
