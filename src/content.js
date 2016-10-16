@@ -3,7 +3,7 @@ function applyStyles(){};
 (function() {
 	var COLOR_MARGIN_UNIQUENESS = 40;
 	var colors = [];
-	var counter = 0;
+	// var counter = 0;
 
 	function init() {
 		chrome.storage.sync.get("enabled", function (item) {
@@ -11,20 +11,20 @@ function applyStyles(){};
 				console.log("ColorMind enabled.");
 				chrome.storage.sync.set({"enabled": true});
 
-				chrome.storage.onChanged.addListener(function (changes, namespace) {
-					if (counter == 0) {
-						applyStyles();
-					}
-				});
+				// chrome.storage.onChanged.addListener(function (changes, namespace) {
+				// 	if (counter == 0) {
+				// 		applyStyles();
+				// 	}
+				// });
 
 				$("<style id='colormind-styles' type='text/css'></style>").appendTo("head");
 				$("*").each(function(i, e) {
-					color = $(e).css('color').match(/\d+/g)
-					background_color = $(e).css('background-color').match(/\d+/g)
-					$(e).addClass('colormind_background_' + colors.indexOf(makeUnique(background_color)))
-					$(e).addClass('colormind_' + colors.indexOf(makeUnique(color)))
+					color = $(e).css('color').match(/\d+/g);
+					background_color = $(e).css('background-color').match(/\d+/g);
+					$(e).addClass('colormind_background_' + colors.indexOf(makeUnique(background_color)));
+					$(e).addClass('colormind_' + colors.indexOf(makeUnique(color)));
 				});
-				counter = colors.length;
+				// counter = colors.length;
 				console.log(colors.length + " unique colors identified.")
 
 				applyStyles = function() {
@@ -74,18 +74,18 @@ function applyStyles(){};
 
 	// Get corrected color for given color
 	function getColor(color, n) {
-		chrome.storage.sync.get(JSON.stringify(color), function(correctColor) {
+		chrome.storage.sync.get(JSON.stringify(color), function (correctColor) {
 			if ($.isEmptyObject(correctColor)) {
-        		correctColor = JSON.stringify(color);
-				if (counter > 0) {	
-					--counter;
-					var params = {};
-					params[correctColor] = correctColor;
-					chrome.storage.sync.set(params);
-				}
-			} else if (counter != 0) {
-				counter = 0;
+        correctColor = JSON.stringify(color);
+				// if (counter > 0) {
+					// --counter;
+  			var params = {};
+				params[correctColor] = correctColor;
+				chrome.storage.sync.set(params);
 			}
+			// } else if (counter != 0) {
+				// counter = 0;
+			// }
 			
 			c_string = correctColor[JSON.stringify(color)];
 			if (c_string == undefined) {
