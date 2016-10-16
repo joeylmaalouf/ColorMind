@@ -86,9 +86,14 @@ function applyStyles(){};
 			} else if (counter != 0) {
 				counter = 0;
 			}
-
+			
 			c_string = correctColor[JSON.stringify(color)];
-			c_string = c_string.substring(1, c_string.length -1);
+			if (c_string == undefined) {
+				c_string = JSON.stringify(color);
+			} else {	
+				c_string = c_string.substring(1, c_string.length -1);
+			}
+
 			if (color.length == 4) {
 				addClass("rgba(" + c_string + ")", n);
 			} else {
