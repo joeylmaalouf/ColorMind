@@ -1,3 +1,30 @@
+var blindMap = {
+  "red/darkGreen": {
+    "red": "red",
+    "green": "blue"
+  },
+  "blue/yellow": {
+    "blue": "blue",
+    "yellow": "green"
+  },
+  "lightRed/green": {
+    "lightRed": "red",
+    "green": "blue"
+  },
+  "magenta/darkCyan": {
+    "magenta" : "magenta",
+    "darkCyan": "gray"
+  },
+  "red/green": {
+    "red": "red",
+    "green": "blue"
+  },
+  "yellow/blue": {
+    "yellow": "green",
+    "blue": "blue"
+  }
+};
+
 var diagnose_func = function (e) {
   e.preventDefault();
   var a = $("input[name=color1]:checked", "#diagnose").val() === "Indistinct";
@@ -27,46 +54,25 @@ function options_func() {
     var cb = items["ColorBlindness"];
     results.innerHTML = "You have the following types of color blindness:<br>";
     var perfect = true;
-    console.log(cb);
-    for (var key in cb) {
-      if (cb[key]) {
-        results.innerHTML += key + "<br>";
+    var changes = {};
+    for (var type in cb) {
+      if (cb[type]) {
+        results.innerHTML += type + "<br>";
         perfect = false;
+        var mapping = blindMap[type];
+        for (var col in mapping) {
+          changes[col] = mapping[col];
+        }
       }
     }
     if (perfect) {
-      results.innerHTML += "None!<br>"
+      results.innerHTML += "None!"
     }
-    var colorMapping = {
-      "red/darkGreen": {
-        "red": "red",
-        "green": "blue"
-      },
-      "blue/yellow": {
-        "blue": "blue",
-        "yellow": "green"
-      },
-      "lightRed/green": {
-        "lightRed": "red",
-        "green": "blue"
-      },
-      "magenta/darkCyan": {
-        "magenta" : "magenta",
-        "darkCyan": "gray"
-      },
-      "red/green": {
-        "red": "red",
-        "green": "blue"
-      },
-      "yellow/blue": {
-        "yellow": "green",
-        "blue": "blue"
-      }
-    };
+    results.innerHTML += "<br>";
     for (var key in items) {
       if (key !== "enabled" && key !== "ColorBlindness") {
         var val = items[key];
-        // change val to recommended category based on colorblindness
+        // change val to recommended category based on changes mapping
         results.innerHTML += "<input size=\"7\" class=\"color\" value=\"" + parseRGB(key) + "\">";
         results.innerHTML += " &rarr; ";
         results.innerHTML += "<input size=\"7\" class=\"color\" value=\"" + parseRGB(val) + "\">";
