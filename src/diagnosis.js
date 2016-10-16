@@ -51,9 +51,7 @@ function restore_options() {
       }
     }
 
-
     header.textContent = 'Results';
-
 
   // redDarkGreen colorblind = red--> red; green--> Blue
   // blueYellow colorbline = blue-->blue; yellow-->Green
@@ -61,8 +59,32 @@ function restore_options() {
   // magentaDarkCyan = magenta--> magenta; dark cyan--> gray
   // redGreen = red-->red; green-->blue
   // YellowBlue = yellow-->Green; blue-->blue
-
-
+  var colorMapping = {
+    "red_darkGreen": {
+      "red": "red",
+      "green": "blue"
+    },
+    "blue_yellow": {
+      "blue": "blue",
+      "yellow": "green"
+    },
+    "lightRed_green": {
+      "lightRed": "red",
+      "green": "blue"
+    },
+    "magenta_darkCyan": {
+      "magenta" : "magenta",
+      "darkCyan": "gray"
+    },
+    "red_green": {
+      "red": "red",
+      "green": "blue"
+    },
+    "yellow_blue": {
+      "yellow": "green",
+      "blue": "blue"
+    }
+  };
 
     // results.textContent = '';
     // res = [items.dGreen_Red,items.dYellow_Blue,items.lRed_Green,items.Magenta_dCyan,items.Red_Green,items.Yellow_Blue]
