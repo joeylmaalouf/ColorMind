@@ -1,83 +1,87 @@
-var diagnose_func = function () {
-  $("#diagnose").submit(function (event) {
-    event.preventDefault();
-
-    var a = $('input[name=color1]:checked', '#diagnose').val();
-    var b = $('input[name=color2]:checked', '#diagnose').val();
-    var c = $('input[name=color3]:checked', '#diagnose').val();
-    var d = $('input[name=color4]:checked', '#diagnose').val();
-    var e = $('input[name=color5]:checked', '#diagnose').val();
-    var f = $('input[name=color6]:checked', '#diagnose').val();
-    res = [a,b,c,d,e,f];
-
-    for (i = 0; i < res.length; i++) {
-      res[i] = !res[i] == "Distinct";
-    }
-    var blindness = {
-      dGreen_Red: res[0],
-      dYellow_Blue: res[1],
-      lRed_Green: res[2],
-      Magenta_dCyan: res[3],
-      Red_Green: res[4],
-      Yellow_Blue: res[5]
-    }; 
-    chrome.storage.sync.set({
-      "ColorBlindness": blindness
-    });
+var diagnose_func = function (e) {
+  e.preventDefault();
+  var a = $("input[name=color1]:checked", "#diagnose").val() === "Indistinct";
+  var b = $("input[name=color2]:checked", "#diagnose").val() === "Indistinct";
+  var c = $("input[name=color3]:checked", "#diagnose").val() === "Indistinct";
+  var d = $("input[name=color4]:checked", "#diagnose").val() === "Indistinct";
+  var e = $("input[name=color5]:checked", "#diagnose").val() === "Indistinct";
+  var f = $("input[name=color6]:checked", "#diagnose").val() === "Indistinct";
+  var blindness = {
+    "red/darkGreen": a,
+    "blue/yellow": b,
+    "lightRed/green": c,
+    "magenta/darkCyan": d,
+    "red/green": e,
+    "yellow/blue": f
+  }; 
+  chrome.storage.sync.set({
+    "ColorBlindness": blindness
   });
-};
+}
 
 function options_func() {
   chrome.storage.sync.get(null, function (items) {
-    var results = document.getElementById('results');
-    var header = document.getElementById('resHeader');
-    header.textContent = 'Results';
-    for (var i in items) {
-      if (i !== "enabled" && i !== "ColorBlindness") {
-        var values = items[i];
-        results.textContent += "<input size=\"7\" value=\"" + values[0] + "\">";
-        results.textContent += " &rarr; ";
-        results.textContent += "<input size=\"7\" value=\"" + values[1] + "\">";
-        results.textContent += " <br> <br>";
+    var results = document.getElementById("results");
+    var header = document.getElementById("resHeader");
+    header.innerHTML = "Results";
+    var cb = items["ColorBlindness"];
+    results.innerHTML = "You have the following types of color blindness:<br>";
+    var perfect = true;
+    console.log(cb);
+    for (var key in cb) {
+      if (cb[key]) {
+        results.innerHTML += key + "<br>";
+        perfect = false;
       }
     }
-
-    // redDarkGreen colorblind = red--> red; green--> Blue
-    // blueYellow colorbline = blue-->blue; yellow-->Green
-    // lightRedGreen = lightRed--> red; green-->blue
-    // magentaDarkCyan = magenta--> magenta; dark cyan--> gray
-    // redGreen = red-->red; green-->blue
-    // YellowBlue = yellow-->Green; blue-->blue
+    if (perfect) {
+      results.innerHTML += "None!<br>"
+    }
     var colorMapping = {
-      "red_darkGreen": {
+      "red/darkGreen": {
         "red": "red",
         "green": "blue"
       },
-      "blue_yellow": {
+      "blue/yellow": {
         "blue": "blue",
         "yellow": "green"
       },
-      "lightRed_green": {
+      "lightRed/green": {
         "lightRed": "red",
         "green": "blue"
       },
-      "magenta_darkCyan": {
+      "magenta/darkCyan": {
         "magenta" : "magenta",
         "darkCyan": "gray"
       },
-      "red_green": {
+      "red/green": {
         "red": "red",
         "green": "blue"
       },
-      "yellow_blue": {
+      "yellow/blue": {
         "yellow": "green",
         "blue": "blue"
       }
     };
+    for (var key in items) {
+      if (key !== "enabled" && key !== "ColorBlindness") {
+        var val = items[key];
+        // change val to recommended category based on colorblindness
+        results.innerHTML += "<input size=\"7\" class=\"color\" value=\"" + parseRGB(key) + "\">";
+        results.innerHTML += " &rarr; ";
+        results.innerHTML += "<input size=\"7\" class=\"color\" value=\"" + parseRGB(val) + "\">";
+        results.innerHTML += " <br> <br>";
+      }
+    }
+    $(".color").spectrum({
+      disabled: true
+    });
   });
 }
 
 $(document).ready(function() {
-  diagnose_func();
-  options_func();
+  $("#diagnose").submit(function (e) {
+    diagnose_func(e);
+    options_func();
+  });
 });
