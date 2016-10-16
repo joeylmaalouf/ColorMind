@@ -1,5 +1,5 @@
 var blindMap = {
-  "red/darkGreen": {
+  "red/dark_green": {
     "red": "red",
     "green": "blue"
   },
@@ -7,13 +7,13 @@ var blindMap = {
     "blue": "blue",
     "yellow": "green"
   },
-  "lightRed/green": {
-    "lightRed": "red",
+  "light_red/green": {
+    "light_red": "red",
     "green": "blue"
   },
-  "magenta/darkCyan": {
+  "magenta/dark_cyan": {
     "magenta" : "magenta",
-    "darkCyan": "gray"
+    "dark_cyan": "gray"
   },
   "red/green": {
     "red": "red",
@@ -34,10 +34,10 @@ var diagnose_func = function (e) {
   var e = $("input[name=color5]:checked", "#diagnose").val() === "Indistinct";
   var f = $("input[name=color6]:checked", "#diagnose").val() === "Indistinct";
   var blindness = {
-    "red/darkGreen": a,
+    "red/dark_green": a,
     "blue/yellow": b,
-    "lightRed/green": c,
-    "magenta/darkCyan": d,
+    "light_red/green": c,
+    "magenta/dark_cyan": d,
     "red/green": e,
     "yellow/blue": f
   }; 
@@ -47,7 +47,7 @@ var diagnose_func = function (e) {
 }
 
 function options_func() {
-  chrome.storage.sync.get(null, function (items) {
+  chrome.storage.sync.get("ColorBlindness", function (items) {
     var results = document.getElementById("results");
     var header = document.getElementById("resHeader");
     header.innerHTML = "Results";
@@ -69,15 +69,12 @@ function options_func() {
       results.innerHTML += "None!"
     }
     results.innerHTML += "<br>";
-    for (var key in items) {
-      if (key !== "enabled" && key !== "ColorBlindness") {
-        var val = items[key];
-        // change val to recommended category based on changes mapping
-        results.innerHTML += "<input size=\"7\" class=\"color\" value=\"" + parseRGB(key) + "\">";
-        results.innerHTML += " &rarr; ";
-        results.innerHTML += "<input size=\"7\" class=\"color\" value=\"" + parseRGB(val) + "\">";
-        results.innerHTML += " <br> <br>";
-      }
+    for (var key in changes) {
+      var val = changes[key];
+      results.innerHTML += "<input size=\"7\" class=\"color\" value=\"" + RGB2HEX(colorSamples[key]) + "\">";
+      results.innerHTML += " &rarr; ";
+      results.innerHTML += "<input size=\"7\" class=\"color\" value=\"" + RGB2HEX(colorSamples[val]) + "\">";
+      results.innerHTML += " <br> <br>";
     }
     $(".color").spectrum({
       disabled: true
