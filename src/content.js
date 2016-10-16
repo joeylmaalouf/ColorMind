@@ -6,35 +6,43 @@ function applyStyles(){};
 	var counter = 0;
 
 	function init() {
-		chrome.storage.onChanged.addListener(function (changes, namespace) {
-			console.log(counter);
-			if (counter == 0) {
-				console.log("UPDATING")
+		chrome.storage.sync.get("enabled", function(item) {
+			if ($.isEmptyObject(item) || item.enabled) {
+				console.log("ColorMind enabled");
+				chrome.storage.sync.set({enabled: false});
+
+				chrome.storage.onChanged.addListener(function (changes, namespace) {
+					console.log(counter);
+					if (counter == 0) {
+						applyStyles();
+					}
+				});
+
+				$("<style id='colormind-styles' type='text/css'></style>").appendTo("head");
+				$("*").each(function(i, e) {
+					color = $(e).css('color').match(/\d+/g)
+					background_color = $(e).css('background-color').match(/\d+/g)
+					$(e).addClass('colormind_background_' + colors.indexOf(makeUnique(background_color)))
+					$(e).addClass('colormind_' + colors.indexOf(makeUnique(color)))
+				});
+				counter = colors.length;
+				console.log(colors.length + " unique colors identified.")
+
+				applyStyles = function() {
+					$("#colormind-styles").text("");
+					$.each(colors, function(n, color) {
+				        for (var i = 0; i < color.length; ++i) {
+				        	color[i] = parseInt(color[i]);
+				        };
+						getColor(color, n);
+					});
+				}
+
 				applyStyles();
+			} else {
+				console.log("ColorMind disabled");
 			}
 		});
-
-		$("<style id='colormind-styles' type='text/css'></style>").appendTo("head");
-		$("*").each(function(i, e) {
-			color = $(e).css('color').match(/\d+/g)
-			background_color = $(e).css('background-color').match(/\d+/g)
-			$(e).addClass('colormind_background_' + colors.indexOf(makeUnique(background_color)))
-			$(e).addClass('colormind_' + colors.indexOf(makeUnique(color)))
-		});
-		counter = colors.length;
-		console.log(colors.length + " unique colors identified.")
-
-		applyStyles = function() {
-			$("#colormind-styles").text("");
-			$.each(colors, function(n, color) {
-		        for (var i = 0; i < color.length; ++i) {
-		        	color[i] = parseInt(color[i]);
-		        };
-				getColor(color, n);
-			});
-		}
-
-		applyStyles();
 	}
 
 	function addClass(color, n) {
